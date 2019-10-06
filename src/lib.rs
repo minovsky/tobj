@@ -481,39 +481,40 @@ fn export_faces(pos: &[f32],
                 faces: &[Face],
                 mat_id: Option<usize>)
                 -> Mesh {
-    let mut index_map = HashMap::new();
     let mut mesh = Mesh::empty();
     mesh.material_id = mat_id;
+    mesh.positions = pos.to_vec();
+    mesh.texcoords = texcoord.to_vec();
+    mesh.normals = normal.to_vec();
     for f in faces {
-        // Optimized paths for Triangles and Quads, Polygon handles the general case of an unknown
-        // length triangle fan
         match *f {
             Face::Triangle(ref a, ref b, ref c) => {
-                add_vertex(&mut mesh, &mut index_map, a, pos, texcoord, normal);
-                add_vertex(&mut mesh, &mut index_map, b, pos, texcoord, normal);
-                add_vertex(&mut mesh, &mut index_map, c, pos, texcoord, normal);
+                mesh.indices.push(a.v as u32);
+                mesh.indices.push(b.v as u32);
+                mesh.indices.push(c.v as u32);
             }
             Face::Quad(ref a, ref b, ref c, ref d) => {
-                add_vertex(&mut mesh, &mut index_map, a, pos, texcoord, normal);
-                add_vertex(&mut mesh, &mut index_map, b, pos, texcoord, normal);
-                add_vertex(&mut mesh, &mut index_map, c, pos, texcoord, normal);
-
-                add_vertex(&mut mesh, &mut index_map, a, pos, texcoord, normal);
-                add_vertex(&mut mesh, &mut index_map, c, pos, texcoord, normal);
-                add_vertex(&mut mesh, &mut index_map, d, pos, texcoord, normal);
+                mesh.indices.push(a.v as u32);
+                mesh.indices.push(b.v as u32);
+                mesh.indices.push(c.v as u32);
+                
+                mesh.indices.push(a.v as u32);
+                mesh.indices.push(c.v as u32);
+                mesh.indices.push(d.v as u32);
             }
             Face::Polygon(ref indices) => {
                 let a = &indices[0];
                 let mut b = &indices[1];
                 for c in indices.iter().skip(2) {
-                    add_vertex(&mut mesh, &mut index_map, a, pos, texcoord, normal);
-                    add_vertex(&mut mesh, &mut index_map, b, pos, texcoord, normal);
-                    add_vertex(&mut mesh, &mut index_map, c, pos, texcoord, normal);
+                    mesh.indices.push(a.v as u32);
+                    mesh.indices.push(b.v as u32);
+                    mesh.indices.push(c.v as u32);
                     b = c;
                 }
             }
         }
     }
+
     mesh
 }
 
