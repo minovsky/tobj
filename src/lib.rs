@@ -440,40 +440,6 @@ fn parse_face(face_str: SplitWhitespace,
     true
 }
 
-/// Add a vertex to a mesh by either re-using an existing index (eg. it's in the `index_map`)
-/// or appending the position, texcoord and normal as appropriate and creating a new vertex
-fn add_vertex(mesh: &mut Mesh,
-              index_map: &mut HashMap<VertexIndices, u32>,
-              vert: &VertexIndices,
-              pos: &[f32],
-              texcoord: &[f32],
-              normal: &[f32]) {
-    match index_map.get(vert) {
-        Some(&i) => mesh.indices.push(i),
-        None => {
-            let v = vert.v as usize;
-            // Add the vertex to the mesh
-            mesh.positions.push(pos[v * 3]);
-            mesh.positions.push(pos[v * 3 + 1]);
-            mesh.positions.push(pos[v * 3 + 2]);
-            if !texcoord.is_empty() && vert.vt > -1 {
-                let vt = vert.vt as usize;
-                mesh.texcoords.push(texcoord[vt * 2]);
-                mesh.texcoords.push(texcoord[vt * 2 + 1]);
-            }
-            if !normal.is_empty() && vert.vn > -1 {
-                let vn = vert.vn as usize;
-                mesh.normals.push(normal[vn * 3]);
-                mesh.normals.push(normal[vn * 3 + 1]);
-                mesh.normals.push(normal[vn * 3 + 2]);
-            }
-            let next = index_map.len() as u32;
-            mesh.indices.push(next);
-            index_map.insert(*vert, next);
-        }
-    }
-}
-
 /// Export a list of faces to a mesh and return it, converting quads to tris
 fn export_faces(pos: &[f32],
                 texcoord: &[f32],
