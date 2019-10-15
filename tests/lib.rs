@@ -72,28 +72,35 @@ fn multiple_face_formats() {
     let quad_expect_pos = vec![0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0];
     let quad_expect_tex = vec![0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0];
     let quad_expect_idx = vec![0, 1, 2, 0, 2, 3];
+    let quad_expect_tex_idx = vec![0, 1, 2, 0, 2, 3];
     assert_eq!(quad.positions, quad_expect_pos);
     assert_eq!(quad.texcoords, quad_expect_tex);
     assert_eq!(quad.indices, quad_expect_idx);
+    assert_eq!(quad.texture_indices, quad_expect_tex_idx);
 
     assert_eq!(models[1].name, "Quad_face");
     let quad_face = &models[1].mesh;
     let quad_expect_normals = vec![0.0, 0.0, 1.0];
+    let quad_expect_normal_idx = vec![0, 0, 0, 0, 0, 0];
     assert_eq!(quad_face.material_id, None);
     assert_eq!(quad_face.positions, quad_expect_pos);
     assert_eq!(quad_face.texcoords, quad_expect_tex);
     assert_eq!(quad_face.normals, quad_expect_normals);
     assert_eq!(quad_face.indices, quad_expect_idx);
+    assert_eq!(quad_face.texture_indices, quad_expect_tex_idx);
+    assert_eq!(quad_face.normal_indices, quad_expect_normal_idx);
 
     assert_eq!(models[2].name, "Tri_v_vn");
     let tri = &models[2].mesh;
     let tri_expect_pos = vec![0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0];
     let tri_expect_normals = vec![0.0, 0.0, 1.0];
     let tri_expect_idx = vec![0, 1, 2];
+    let tri_expect_normal_idx = vec![0, 0, 0];
     assert_eq!(tri.material_id, None);
     assert_eq!(tri.positions, tri_expect_pos);
     assert_eq!(tri.normals, tri_expect_normals);
     assert_eq!(tri.indices, tri_expect_idx);
+    assert_eq!(tri.normal_indices, tri_expect_normal_idx);
 }
 
 fn validate_cornell(models: Vec<tobj::Model>, mats: Vec<tobj::Material>) {
