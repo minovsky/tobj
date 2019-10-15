@@ -163,6 +163,8 @@ pub struct Mesh {
     /// Indices for vertices of each triangle. Each face in the mesh is a triangle and the indices
     /// specify the position, normal and texture coordinate for each vertex of the face.
     pub indices: Vec<u32>,
+    pub texture_indices: Vec<u32>,
+    pub normal_indices: Vec<u32>,
     /// Optional material id associated with this mesh. The material id indexes into the Vec of
     /// Materials loaded from the associated MTL file
     pub material_id: Option<usize>,
@@ -174,6 +176,8 @@ impl Mesh {
                normals: Vec<f32>,
                texcoords: Vec<f32>,
                indices: Vec<u32>,
+               texture_indices: Vec<u32>,
+               normal_indices: Vec<u32>,
                material_id: Option<usize>)
                -> Mesh {
         Mesh {
@@ -181,6 +185,8 @@ impl Mesh {
             normals,
             texcoords,
             indices,
+            texture_indices,
+            normal_indices,
             material_id,
         }
     }
@@ -191,6 +197,8 @@ impl Mesh {
             normals: Vec::new(),
             texcoords: Vec::new(),
             indices: Vec::new(),
+            texture_indices: Vec::new(),
+            normal_indices: Vec::new(),
             material_id: None,
         }
     }
@@ -458,15 +466,39 @@ fn export_faces(pos: &[f32],
                 mesh.indices.push(a.v as u32);
                 mesh.indices.push(b.v as u32);
                 mesh.indices.push(c.v as u32);
+
+                mesh.texture_indices.push(a.vt as u32);
+                mesh.texture_indices.push(b.vt as u32);
+                mesh.texture_indices.push(c.vt as u32);
+
+                mesh.normal_indices.push(a.vn as u32);
+                mesh.normal_indices.push(b.vn as u32);
+                mesh.normal_indices.push(c.vn as u32);
             }
             Face::Quad(ref a, ref b, ref c, ref d) => {
                 mesh.indices.push(a.v as u32);
                 mesh.indices.push(b.v as u32);
                 mesh.indices.push(c.v as u32);
                 
+                mesh.texture_indices.push(a.vt as u32);
+                mesh.texture_indices.push(b.vt as u32);
+                mesh.texture_indices.push(c.vt as u32);
+
+                mesh.normal_indices.push(a.vn as u32);
+                mesh.normal_indices.push(b.vn as u32);
+                mesh.normal_indices.push(c.vn as u32);
+                
                 mesh.indices.push(a.v as u32);
                 mesh.indices.push(c.v as u32);
                 mesh.indices.push(d.v as u32);
+                
+                mesh.texture_indices.push(a.vt as u32);
+                mesh.texture_indices.push(c.vt as u32);
+                mesh.texture_indices.push(d.vt as u32);
+
+                mesh.normal_indices.push(a.vn as u32);
+                mesh.normal_indices.push(c.vn as u32);
+                mesh.normal_indices.push(d.vn as u32);
             }
             Face::Polygon(ref indices) => {
                 let a = &indices[0];
@@ -475,6 +507,15 @@ fn export_faces(pos: &[f32],
                     mesh.indices.push(a.v as u32);
                     mesh.indices.push(b.v as u32);
                     mesh.indices.push(c.v as u32);
+
+                    mesh.texture_indices.push(a.vt as u32);
+                    mesh.texture_indices.push(b.vt as u32);
+                    mesh.texture_indices.push(c.vt as u32);
+
+                    mesh.normal_indices.push(a.vn as u32);
+                    mesh.normal_indices.push(b.vn as u32);
+                    mesh.normal_indices.push(c.vn as u32);
+
                     b = c;
                 }
             }
